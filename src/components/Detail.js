@@ -1,18 +1,41 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
+import {useParams} from 'react-router-dom';
+import db from '../firebase';
 
 function Detail() {
+  const {id} = useParams();
+  const [movie, setMovie] = useState()
+
+  useEffect(() => {
+      db.collection("movies")
+      .doc(id)
+      .get()
+      .then((doc) => {
+          if(doc.exists) {
+              setMovie(doc.data())
+          } else {
+            
+          }
+      })
+  }, []);
+
+
+
+
   return (
     <Container>
-      <Background>
+      {movie && (
+        <>
+        <Background>
         <img
-          src="https://www.awn.com/sites/default/files/styles/original/public/image/attached/1046782-bao-003-lr.jpg?itok=B0CkKSdI"
+          src={movie.backgroundImg}
           alt=""
         />
       </Background>
       <ImageTitle>
         <img
-          src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78"
+          src={movie.titleImg}
           alt=""
         />
       </ImageTitle>
@@ -33,11 +56,48 @@ function Detail() {
         </GroupWatchButton>
       </Controls>
         <SubTitle>
-          2018 • 7m • Family, Fantasy, Kids, Animation
+         {movie.subTitle}
         </SubTitle>
         <Description>
-        The film is about an aging and lonely Chinese-Canadian mother, suffering from empty nest syndrome, who receives an unexpected second chance at motherhood when she makes a steamed bun (baozi) that comes to life. The film won the Oscar for the Best Animated Short Film at the 91st Academy Awards.
+        {movie.description}
         </Description>
+        </>
+        )
+    }
+      {/* <Background>
+        <img
+          src={movie.backgroundImg}
+          alt=""
+        />
+      </Background>
+      <ImageTitle>
+        <img
+          src={movie.titleImg}
+          alt=""
+        />
+      </ImageTitle>
+      <Controls>
+        <PlayButton>
+          <img src="/images/play-icon-black.png" alt="" />
+          <span>PLAY</span>
+        </PlayButton>
+        <TrailerButton>
+          <img src="/images/play-icon-white.png" alt="" />
+          <span>Trailer</span>
+        </TrailerButton>
+        <AddButton>
+          <span>+</span>
+        </AddButton>
+        <GroupWatchButton>
+          <img src="/images/group-icon.png" alt="" />
+        </GroupWatchButton>
+      </Controls>
+        <SubTitle>
+         {movie.subTitle}
+        </SubTitle>
+        <Description>
+        {movie.description}
+        </Description> */}
     </Container>
   );
 }
@@ -71,7 +131,8 @@ const ImageTitle = styled.div`
   min-height: 170px;
   width: 35vw;
   min-width: 200px;
-  margin-top: 60px;
+  margin-top: 50px;
+  margin-bottom: 25px;
 
   img {
     width: 100%;
